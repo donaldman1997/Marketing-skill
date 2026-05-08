@@ -105,6 +105,143 @@ CRM refers to the strategies, processes, and technologies used to manage and ana
 | Zoho CRM | Budget-conscious teams; broad feature set |
 | ActiveCampaign | Email-first teams; deep automation workflows |
 | Attio | Modern data-centric teams; flexible data model |
+| Infusionsoft / Keap | Small businesses; combined CRM, e-commerce, and marketing automation |
+
+---
+
+## Infusionsoft / Keap Integration (PHP SDK)
+
+The [infusionsoft-php](https://github.com/infusionsoft/infusionsoft-php) SDK provides a PHP client for the Infusionsoft (now Keap) API.
+
+### Installation
+
+```bash
+composer require infusionsoft/php-sdk
+```
+
+### Authentication
+
+The SDK supports three authentication modes:
+
+| Mode | When to Use |
+|---|---|
+| OAuth2 (access token) | Standard third-party app integrations |
+| Service Account Key (`KeapAK-` prefix) | Server-to-server integrations without user consent flow |
+| Legacy API Key | Older integrations using the XML-RPC API |
+
+**OAuth2 setup:**
+
+```php
+use Infusionsoft\Infusionsoft;
+
+$infusionsoft = new Infusionsoft([
+    'clientId'     => 'YOUR_CLIENT_ID',
+    'clientSecret' => 'YOUR_CLIENT_SECRET',
+    'redirectUri'  => 'https://yourapp.com/callback',
+]);
+
+// Redirect user to authorization URL, then exchange the code:
+$infusionsoft->requestAccessToken($code);
+
+// Persist the token for reuse
+$token = $infusionsoft->getToken();
+```
+
+**Service account key setup:**
+
+```php
+$infusionsoft = new Infusionsoft([
+    'clientId'     => 'YOUR_CLIENT_ID',
+    'clientSecret' => 'YOUR_CLIENT_SECRET',
+]);
+
+$infusionsoft->setToken(new Token(['access_token' => 'KeapAK-...']));
+```
+
+### Token Refresh
+
+```php
+if ($infusionsoft->getToken()->isExpired()) {
+    $infusionsoft->refreshAccessToken();
+}
+```
+
+Store the refreshed token after each request to avoid re-authentication.
+
+### Available API Services
+
+#### REST API (`getRestApi()`)
+
+```php
+$contacts  = $infusionsoft->getRestApi('contacts');
+$tags      = $infusionsoft->getRestApi('tags');
+$campaigns = $infusionsoft->getRestApi('campaigns');
+$companies = $infusionsoft->getRestApi('companies');
+$emails    = $infusionsoft->getRestApi('emails');
+$orders    = $infusionsoft->getRestApi('orders');
+$products  = $infusionsoft->getRestApi('products');
+```
+
+#### XML-RPC API (`getApi()`)
+
+```php
+$contacts = $infusionsoft->getApi('contacts');
+$invoices = $infusionsoft->getApi('invoices');
+```
+
+Use the REST API for new integrations; fall back to XML-RPC only for features not yet available via REST.
+
+### Making Requests
+
+**REST:**
+
+```php
+// List contacts
+$contacts = $infusionsoft->getRestApi('contacts')->all();
+
+// Create a contact
+$infusionsoft->getRestApi('contacts')->create([
+    'given_name'  => 'Jane',
+    'family_name' => 'Smith',
+    'email_addresses' => [['email' => 'jane@example.com', 'field' => 'EMAIL1']],
+]);
+```
+
+**XML-RPC:**
+
+```php
+$result = $infusionsoft->request('ContactService.findByEmail', ['jane@example.com', ['Id', 'FirstName', 'LastName']]);
+```
+
+### Debugging
+
+```php
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+
+$logger = new Logger('infusionsoft');
+$logger->pushHandler(new StreamHandler('infusionsoft.log', Logger::DEBUG));
+
+$infusionsoft->setLogger($logger);
+$infusionsoft->setDebug(true);
+```
+
+### Date Formatting
+
+The SDK provides a helper to format dates for API compatibility:
+
+```php
+$formatted = $infusionsoft->formatDate('2026-05-08');
+```
+
+### Integration Checklist
+
+- [ ] Register your app in the Keap developer portal and obtain `clientId` / `clientSecret`
+- [ ] Choose authentication method (OAuth2 vs. service account key)
+- [ ] Implement token storage and refresh logic before each API call
+- [ ] Use REST API endpoints for contacts, tags, campaigns, and orders
+- [ ] Enable PSR-3 logging in non-production environments for debugging
+- [ ] Handle rate limit responses (HTTP 429) with exponential backoff
 
 ---
 
