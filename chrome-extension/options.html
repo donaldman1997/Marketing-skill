@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Marketing Suite – Settings</title>
+  <link rel="stylesheet" href="options.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>&#9881; Settings</h1>
+
+    <section>
+      <h2>Keap / Infusionsoft CRM</h2>
+      <p class="hint">
+        Get your API token from
+        <a href="https://app.keap.com/app/developer-tools" target="_blank">Keap Developer Tools</a>.
+      </p>
+      <label>Access Token
+        <input id="keapAccessToken" type="password" placeholder="Paste your Keap/Infusionsoft access token" />
+      </label>
+      <label>API Base URL
+        <input id="keapBaseUrl" type="url" placeholder="https://api.infusionsoft.com/crm/rest/v1" />
+        <span class="hint">Leave blank to use the default Infusionsoft endpoint.</span>
+      </label>
+    </section>
+
+    <section>
+      <h2>Google Gemini AI (Content Generation — Free)</h2>
+      <p class="hint">
+        Get a free API key from
+        <a href="https://aistudio.google.com/app/apikey" target="_blank">Google AI Studio</a>.
+        No credit card required.
+      </p>
+      <label>API Key
+        <input id="geminiApiKey" type="password" placeholder="AIza..." />
+      </label>
+    </section>
+
+    <div class="actions">
+      <button id="btn-save" class="btn primary">Save Settings</button>
+      <span id="save-status"></span>
+    </div>
+  </div>
+  <script src="options.js"></script>
+</body>
+</html>
