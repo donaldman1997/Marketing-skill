@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Marketing Skill Suite</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <header>
+    <div class="logo">&#128200; Marketing Suite</div>
+    <button id="btn-settings" title="Settings" class="icon-btn">&#9881;</button>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab-btn active" data-tab="leads">Leads</button>
+    <button class="tab-btn" data-tab="crm">CRM</button>
+    <button class="tab-btn" data-tab="content">Content</button>
+  </nav>
+
+  <!-- LEADS TAB -->
+  <section id="tab-leads" class="tab-panel active">
+    <div class="row">
+      <button id="btn-scan" class="btn primary full-width">&#128269; Scan Page for Contacts</button>
+    </div>
+    <div id="leads-results" class="results-area hidden"></div>
+    <div id="leads-actions" class="row hidden">
+      <button id="btn-push-crm" class="btn success">&#128228; Push to CRM</button>
+      <button id="btn-copy-leads" class="btn secondary">&#128203; Copy</button>
+    </div>
+    <div id="leads-status" class="status-msg"></div>
+  </section>
+
+  <!-- CRM TAB -->
+  <section id="tab-crm" class="tab-panel">
+    <label class="field-label">Search Contact by Email</label>
+    <div class="row">
+      <input id="crm-search-email" type="email" class="input" placeholder="name@example.com" />
+      <button id="btn-crm-search" class="btn primary">Search</button>
+    </div>
+    <div id="crm-contact-result" class="results-area hidden"></div>
+
+    <hr />
+
+    <label class="field-label">Add New Contact</label>
+    <input id="crm-first" type="text" class="input" placeholder="First name" />
+    <input id="crm-last" type="text" class="input" placeholder="Last name" />
+    <input id="crm-email" type="email" class="input" placeholder="Email" />
+    <input id="crm-phone" type="tel" class="input" placeholder="Phone (optional)" />
+    <div class="row">
+      <button id="btn-crm-add" class="btn success full-width">&#43; Add to CRM</button>
+    </div>
+    <div id="crm-status" class="status-msg"></div>
+  </section>
+
+  <!-- CONTENT TAB -->
+  <section id="tab-content" class="tab-panel">
+    <label class="field-label">Content Type</label>
+    <select id="content-type" class="input">
+      <option value="email">Cold Email</option>
+      <option value="subject">Email Subject Lines (x5)</option>
+      <option value="ad">Ad Copy (Facebook/Google)</option>
+      <option value="cta">Call-to-Action</option>
+      <option value="summary">Page Summary</option>
+      <option value="custom">Custom Prompt</option>
+    </select>
+
+    <label class="field-label">Context / Notes</label>
+    <textarea id="content-context" class="input textarea" placeholder="Product name, audience, tone, key benefits…" rows="3"></textarea>
+
+    <label class="field-label" id="custom-prompt-label" style="display:none">Custom Prompt</label>
+    <textarea id="custom-prompt" class="input textarea hidden" rows="3" placeholder="Write your prompt here…"></textarea>
+
+    <div class="row">
+      <button id="btn-use-page" class="btn secondary" title="Inject current page context">&#128196; Use Page</button>
+      <button id="btn-generate" class="btn primary flex-grow">&#9889; Generate</button>
+    </div>
+
+    <div id="content-output" class="output-area hidden">
+      <div class="output-header">
+        <span class="output-label">Output</span>
+        <button id="btn-copy-content" class="icon-btn" title="Copy">&#128203;</button>
+      </div>
+      <pre id="content-text"></pre>
+    </div>
+    <div id="content-status" class="status-msg"></div>
+  </section>
+
+  <script src="lib/api.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>
