@@ -1,4 +1,4 @@
-const FIELDS = ["keapAccessToken", "keapBaseUrl", "claudeApiKey"];
+const FIELDS = ["keapAccessToken", "keapBaseUrl", "geminiApiKey"];
 
 // Load saved values
 chrome.storage.sync.get(FIELDS, (data) => {

@@ -53,39 +53,38 @@ const KeapAPI = {
   },
 };
 
-// Claude API client for content generation
-const ClaudeAPI = {
+// Google Gemini API client for content generation (free tier)
+const GeminiAPI = {
   async getKey() {
     return new Promise((resolve) => {
-      chrome.storage.sync.get(["claudeApiKey"], (r) => resolve(r.claudeApiKey));
+      chrome.storage.sync.get(["geminiApiKey"], (r) => resolve(r.geminiApiKey));
     });
   },
 
   async generate(prompt, systemPrompt = "") {
     const apiKey = await this.getKey();
-    if (!apiKey) throw new Error("Claude API key not configured. Open Settings.");
+    if (!apiKey) throw new Error("Gemini API key not configured. Open Settings.");
 
-    const res = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: {
-        "x-api-key": apiKey,
-        "anthropic-version": "2023-06-01",
-        "content-type": "application/json",
-      },
-      body: JSON.stringify({
-        model: "claude-sonnet-4-6",
-        max_tokens: 1024,
-        system: systemPrompt || "You are an expert marketing copywriter. Be concise and persuasive.",
-        messages: [{ role: "user", content: prompt }],
-      }),
-    });
+    const system = systemPrompt || "You are an expert marketing copywriter. Be concise and persuasive.";
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          systemInstruction: { parts: [{ text: system }] },
+          contents: [{ role: "user", parts: [{ text: prompt }] }],
+          generationConfig: { maxOutputTokens: 1024 },
+        }),
+      }
+    );
 
     if (!res.ok) {
       const err = await res.text();
-      throw new Error(`Claude API ${res.status}: ${err}`);
+      throw new Error(`Gemini API ${res.status}: ${err}`);
     }
     const data = await res.json();
-    return data.content[0].text;
+    return data.candidates?.[0]?.content?.parts?.[0]?.text || "";
   },
 };
 

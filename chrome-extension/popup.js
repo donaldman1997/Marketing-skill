@@ -227,7 +227,7 @@ document.getElementById("btn-generate").addEventListener("click", async () => {
   document.getElementById("content-output").classList.add("hidden");
   try {
     const prompt = contentTypePrompts[type](input);
-    const output = await ClaudeAPI.generate(prompt);
+    const output = await GeminiAPI.generate(prompt);
     document.getElementById("content-text").textContent = output;
     document.getElementById("content-output").classList.remove("hidden");
   } catch (e) {
